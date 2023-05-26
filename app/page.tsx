@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 import PlayerTable from "@/components/PlayerTable";
 import { HeaderData } from "@/lib/global";
-import { fetchPlayerData } from "@/services/players.service";
+import { fetchPlayerData, fetchSlippiPlayerData } from "@/services/players";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,7 +14,8 @@ export default async function Home() {
   const session = await getServerSession(authOptions);
 
   const playerData = await fetchPlayerData();
-  console.log(playerData);
+  const slippiData = await fetchSlippiPlayerData("JUUU#304");
+  console.log(playerData, JSON.stringify(slippiData, null, 2));
 
   const headerData: HeaderData[] = [
     { title: "Rank" },
