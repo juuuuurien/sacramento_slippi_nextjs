@@ -4,9 +4,8 @@ export async function fetchPlayerData() {
   const res = await (
     await fetch(`${appUrl}/players`, {
       next: {
-        revalidate: 0,
+        revalidate: 60,
       },
-      cache: "no-cache",
     })
   ).json();
   return res;

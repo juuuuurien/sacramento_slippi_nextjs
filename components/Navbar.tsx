@@ -1,12 +1,8 @@
-"use client";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 const NavBar = () => {
-  const pathName = usePathname();
-  console.log(pathName);
   return (
-    <div className="fixed w-full px-48 bg-slate-950 bg-opacity-40 border-b-[1px] border-neutral-950 backdrop-blur-sm">
+    <div className="fixed w-full px-4 sm:px-24 lg:px-48 bg-slate-950 bg-opacity-40 border-b-[1px] border-neutral-950 backdrop-blur-sm">
       <nav className="flex justify-between items-center p-5">
         <div className="group flex flex-row gap-3 items-center cursor-pointer">
           <Image
@@ -19,7 +15,7 @@ const NavBar = () => {
             Sacramento Slippi Power Rankings
           </span>
         </div>
-        <ul className="flex flex-row gap-5">
+        <ul className="flex flex-row gap-5 invisible sm:visible">
           <li>
             <Link className="hover:text-sky-300 transition-all" href="/">
               Manage

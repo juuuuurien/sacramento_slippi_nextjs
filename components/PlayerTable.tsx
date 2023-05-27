@@ -8,10 +8,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { HeaderData, PlayerData } from "@/lib/global";
+import { SlippiRank } from "@/lib/ranking";
 import { fetchSiteData } from "@/services/app";
 import { fetchPlayerData } from "@/services/players";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import Image from "next/image";
+dayjs.extend(advancedFormat);
 
 // type TableProps = {
 //   headerData: HeaderData[];
@@ -50,7 +53,7 @@ export const LoadingTable = () => {
 };
 
 async function wait() {
-  return new Promise((resolve) => setTimeout(resolve, 5000));
+  return new Promise((resolve) => setTimeout(resolve, 1000));
 }
 
 async function PlayerTable() {
@@ -104,33 +107,44 @@ async function PlayerTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {playerData?.data.map((player: PlayerData) => (
-            <TableRow key={player.connect_code}>
-              <TableCell className="font-bold text-center">
-                {player.rank}
-              </TableCell>
-              <TableCell className="font-bold text-center">
-                {player.past_rank}
-              </TableCell>
-              <TableCell>{player.slippi_player_tag}</TableCell>
-              <TableCell className="text-center">
-                {player.characters?.length}
-              </TableCell>
-              <TableCell className="text-center">
-                {player.slippi_rating}
-              </TableCell>
-              <TableCell
-                className={`text-center ${
-                  player.slippi_rating !== player.slippi_past_rating
-                    ? "text-green-400"
-                    : ""
-                }`}
-              >
-                {player.slippi_past_rating}
-              </TableCell>
-              <TableCell className="text-right">{player.rank}</TableCell>
-            </TableRow>
-          ))}
+          {playerData?.data.map((player: PlayerData) => {
+            const rankData = new SlippiRank(player.slippi_rating).getRank();
+            return (
+              <TableRow key={player.connect_code}>
+                <TableCell className="font-bold text-center">
+                  {player.rank}
+                </TableCell>
+                <TableCell className="font-bold text-center">
+                  {player.past_rank}
+                </TableCell>
+                <TableCell>{player.slippi_player_tag}</TableCell>
+                <TableCell className="text-center">
+                  {player.characters?.length}
+                </TableCell>
+                <TableCell className="text-center">
+                  <div className="flex flex-col gap-1 justify-center items-center">
+                    <Image
+                      alt="rank"
+                      height="24"
+                      width="24"
+                      src={rankData.img}
+                    />
+                    <span>{rankData.name}</span>
+                  </div>
+                </TableCell>
+                <TableCell
+                  className={`text-center ${
+                    player.slippi_rating !== player.slippi_past_rating
+                      ? "text-green-400"
+                      : ""
+                  }`}
+                >
+                  {player.slippi_past_rating}
+                </TableCell>
+                <TableCell className="text-right">{player.rank}</TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </>
