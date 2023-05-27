@@ -6,10 +6,6 @@ export type Rank = {
 };
 
 export class SlippiRank {
-  constructor(rating: number) {
-    this.rating = rating;
-  }
-
   private rating: number;
   private ranks: string[] = [
     "Bronze 1",
@@ -60,23 +56,31 @@ export class SlippiRank {
     "grandmaster.svg",
   ];
 
-  public getRank(): Rank {
+  public rankName: string;
+  public displayRating: number;
+  public imgSrc: string;
+  public style: string;
+
+  //   Todo: Update grandmaster, no rank, and pending logic.
+  constructor(rating: number) {
+    this.rating = rating;
+
     for (let i = 0; i < this.thresholds.length; i++) {
       if (this.rating < this.thresholds[i]) {
-        return {
-          name: this.ranks[i - 1],
-          rating: this.rating,
-          img: `/img/rankings/${this.images[i - 1]}`,
-          style: `todo: fix this`,
-        };
+        this.rankName = this.ranks[i - 1];
+        // round rating to first decimal
+        this.displayRating = Math.floor(this.rating * 10) / 10;
+        this.imgSrc = `/img/rankings/${this.images[i - 1]}`;
+        this.style = `todo: fix this`;
+
+        return;
       }
     }
 
-    return {
-      name: this.ranks[this.ranks.length - 1],
-      rating: this.rating,
-      img: `/img/rankings/${this.images[this.images.length - 1]}`,
-      style: `todo: fix this`,
-    }; // Return the highest rank if the rating is above the last threshold
+    // Return the highest rank if the rating is above the last threshold
+    this.rankName = this.ranks[this.ranks.length - 1];
+    this.displayRating = Math.floor(this.rating);
+    this.imgSrc = `/img/rankings/${this.images[this.images.length - 1]}`;
+    this.style = `todo: fix this`;
   }
 }

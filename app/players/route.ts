@@ -1,6 +1,7 @@
 import { Player } from "@/types";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+export const fetchCache = "force-no-store";
 
 /*
  * @params {Request} request

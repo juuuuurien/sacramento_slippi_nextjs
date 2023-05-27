@@ -108,7 +108,7 @@ async function PlayerTable() {
         </TableHeader>
         <TableBody>
           {playerData?.data.map((player: PlayerData) => {
-            const rankData = new SlippiRank(player.slippi_rating).getRank();
+            const rankData = new SlippiRank(player.slippi_rating);
             return (
               <TableRow key={player.connect_code}>
                 <TableCell className="font-bold text-center">
@@ -127,9 +127,10 @@ async function PlayerTable() {
                       alt="rank"
                       height="24"
                       width="24"
-                      src={rankData.img}
+                      src={rankData.imgSrc}
                     />
-                    <span>{rankData.name}</span>
+                    <span>{rankData.rankName}</span>
+                    <span>{rankData.displayRating}</span>
                   </div>
                 </TableCell>
                 <TableCell
@@ -140,6 +141,20 @@ async function PlayerTable() {
                   }`}
                 >
                   {player.slippi_past_rating}
+                  {player.slippi_rating > player.slippi_past_rating && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-5 h-5 text-green-400 inline-block ml-1"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  )}
                 </TableCell>
                 <TableCell className="text-right">{player.rank}</TableCell>
               </TableRow>
