@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "./page.module.css";
 
@@ -6,27 +5,20 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 import PlayerTable from "@/components/PlayerTable";
 import { HeaderData } from "@/lib/global";
-import { fetchPlayerData, fetchSlippiPlayerData } from "@/services/players";
+import { fetchPlayerData } from "@/services/players";
+import { fetchSiteData } from "@/services/app";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
-
-  const playerData = await fetchPlayerData();
-  const slippiData = await fetchSlippiPlayerData("JUUU#304");
-  console.log(playerData, JSON.stringify(slippiData, null, 2));
-
-  const headerData: HeaderData[] = [
-    { title: "Rank" },
-    { title: "Player" },
-    { title: "Characters" },
-    { title: "Rating" },
-    { title: "W/L", style: "text-right" },
-  ];
+export default function Home() {
   return (
     <main className={styles.main}>
-      <PlayerTable headerData={headerData} playerData={[]} />
+      <h1>Sac Slippi</h1>
+      <Suspense fallback={<div>Loading...</div>}>
+        {/* @ts-expect-error Server Component */}
+        <PlayerTable />
+      </Suspense>
     </main>
   );
 }

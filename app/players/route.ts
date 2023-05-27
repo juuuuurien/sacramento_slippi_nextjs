@@ -8,8 +8,8 @@ import prisma from "@/lib/prisma";
  */
 export async function GET() {
   try {
-    const players = await prisma.player.findMany();
-
+    const players = await prisma.player.findMany({ orderBy: { rank: "asc" } });
+    // console.log("Successfully retrieved players. ", players);
     return NextResponse.json({
       status: 200,
       error: false,

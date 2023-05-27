@@ -1,7 +1,5 @@
-import { fetchSlippiPlayerData } from "../services/players";
-import { Player } from "@/types";
-import { PrismaClient, Prisma } from "@prisma/client";
-import { PlayerCharacter, PlayerData, SlippiPlayerData } from "@/lib/global";
+import { SlippiPlayerData } from "@/lib/global";
+import { Prisma, PrismaClient } from "@prisma/client";
 // import { main } from "./migrations/05_23_2023_seed_character_table";
 // import { main } from "./migrations/05_23_2023_seed_player_table";
 // import { main } from "./migrations/2023-05-24_1684912781_seed_players_with_slippi_data";
