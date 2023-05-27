@@ -70,13 +70,11 @@ async function PlayerTable() {
 
   console.log(siteData.data);
   const headerData: HeaderData[] = [
-    { title: "Rank", style: "text-center" },
-    { title: "Past Rank", style: "text-center" },
+    { title: "Rank", style: "text-center pl-10" },
     { title: "Player" },
     { title: "Characters", style: "text-center" },
     { title: "Rating", style: "text-center" },
-    { title: "Past Rating", style: "text-center" },
-    { title: "W/L", style: "text-right" },
+    { title: "W/L", style: "text-center pr-10" },
   ];
 
   let timeDiff;
@@ -111,11 +109,40 @@ async function PlayerTable() {
             const rankData = new SlippiRank(player.slippi_rating);
             return (
               <TableRow key={player.connect_code}>
-                <TableCell className="font-bold text-center">
-                  {player.rank}
-                </TableCell>
-                <TableCell className="font-bold text-center">
-                  {player.past_rank}
+                <TableCell className="font-bold text-center pl-10">
+                  <div className="relative">
+                    <span>{player.rank}</span>
+                    <span className="absolute right-full">
+                      {player.rank < player.past_rank && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          className="w-5 h-5 text-green-400 inline-block ml-1"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )}
+                      {player.rank > player.past_rank && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          className="w-5 h-5 text-red-400 inline-block ml-1"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )}
+                    </span>
+                  </div>
                 </TableCell>
                 <TableCell>{player.slippi_player_tag}</TableCell>
                 <TableCell className="text-center">
@@ -130,33 +157,27 @@ async function PlayerTable() {
                       src={rankData.imgSrc}
                     />
                     <span>{rankData.rankName}</span>
-                    <span>{rankData.displayRating}</span>
+
+                    <div className="relative">
+                      <span>{rankData.displayRating}</span>
+                      <span className="absolute left-full">
+                        {player.slippi_rating > player.slippi_past_rating && (
+                          <span className="text-green-400 ml-1 text-xs whitespace-nowrap">{`+${Math.abs(
+                            player.slippi_rating - player.slippi_past_rating
+                          )}`}</span>
+                        )}
+                        {player.slippi_rating < player.slippi_past_rating && (
+                          <span className="text-red-400 ml-1 text-xs whitespace-nowrap">{`-${Math.abs(
+                            player.slippi_rating - player.slippi_past_rating
+                          )}`}</span>
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </TableCell>
-                <TableCell
-                  className={`text-center ${
-                    player.slippi_rating !== player.slippi_past_rating
-                      ? "text-green-400"
-                      : ""
-                  }`}
-                >
-                  {player.slippi_past_rating}
-                  {player.slippi_rating > player.slippi_past_rating && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="w-5 h-5 text-green-400 inline-block ml-1"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
+                <TableCell className="text-center pr-10">
+                  {`${player.slippi_wins} / ${player.slippi_losses}`}
                 </TableCell>
-                <TableCell className="text-right">{player.rank}</TableCell>
               </TableRow>
             );
           })}
