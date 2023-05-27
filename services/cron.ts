@@ -76,6 +76,20 @@ export async function updatePlayerData() {
       dbPromises.push(promise);
     }
 
+    dbPromises.push(
+      prisma.siteStats.upsert({
+        create: {
+          totalPlayers: sortedResults.length,
+        },
+        update: {
+          totalPlayers: sortedResults.length,
+        },
+        where: {
+          id: 1,
+        },
+      })
+    );
+
     await Promise.all(dbPromises);
     console.log("---- Done Cron ----");
     console.timeEnd("Finished in");

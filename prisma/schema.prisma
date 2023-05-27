@@ -53,7 +53,8 @@ model PlayerCharacter {
 }
 
 model SiteStats {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-  }
+  id           Int      @id @default(autoincrement())
+  totalPlayers Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+}
