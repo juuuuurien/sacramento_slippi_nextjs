@@ -46,14 +46,14 @@ async function wait() {
 async function PlayerTable() {
   dayjs.extend(advancedFormat);
 
-  const playerDataPromise = fetchPlayerData();
-  const siteDataPromise = fetchSiteData();
+  // const playerDataPromise = fetchPlayerData();
+  // const siteDataPromise = fetchSiteData();
 
-  const [playerData, siteData] = await Promise.all([
-    playerDataPromise,
-    siteDataPromise,
-    wait(),
-  ]);
+  // const [playerData, siteData] = await Promise.all([
+  //   playerDataPromise,
+  //   siteDataPromise,
+  //   wait(),
+  // ]);
 
   // console.log(playerData.data);
   const headerData: HeaderData[] = [
@@ -76,7 +76,7 @@ async function PlayerTable() {
           ))}
         </TableRow>
       </TableHeader>
-      <TableBody>
+      {/* <TableBody>
         {playerData?.data.map((player: PlayerData) => (
           <TableRow key={player.connect_code}>
             <TableCell className="font-medium">{player.rank}</TableCell>
@@ -86,7 +86,7 @@ async function PlayerTable() {
             <TableCell className="text-right">{player.rank}</TableCell>
           </TableRow>
         ))}
-      </TableBody>
+      </TableBody> */}
     </Table>
   );
 }

@@ -1,12 +1,7 @@
 import { Inter } from "next/font/google";
 import styles from "./page.module.css";
 
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../pages/api/auth/[...nextauth]";
 import PlayerTable from "@/components/PlayerTable";
-import { HeaderData } from "@/lib/global";
-import { fetchPlayerData } from "@/services/players";
-import { fetchSiteData } from "@/services/app";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
