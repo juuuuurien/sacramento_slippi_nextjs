@@ -30,6 +30,9 @@ export async function getSlippiData(cc: string) {
 
   const { data } = await (
     await fetch("https://gql-gateway-dot-slippi.uc.r.appspot.com/graphql", {
+      next: {
+        revalidate: 0,
+      },
       method: "POST",
       headers: {
         "Content-Type": "application/json",

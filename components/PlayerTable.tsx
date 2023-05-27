@@ -26,14 +26,24 @@ export const LoadingTable = () => {
         <TableRow></TableRow>
       </TableHeader>
       <TableBody>
-        {/* {invoices.map((invoice) => (
-          <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-          </TableRow>
-        ))} */}
+        <TableRow className="flex flex-row justify-center items-center min-h-[200px]">
+          <TableCell>
+            <svg
+              className="animate-spin"
+              width="36"
+              height="36"
+              fill="#fff"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"
+                opacity=".25"
+              />
+              <circle className="spinner_7WDj" cx="12" cy="2.5" r="1.5" />
+            </svg>
+          </TableCell>
+        </TableRow>
       </TableBody>
     </Table>
   );
@@ -55,39 +65,75 @@ async function PlayerTable() {
     wait(),
   ]);
 
-  // console.log(playerData.data);
+  console.log(siteData.data);
   const headerData: HeaderData[] = [
-    { title: "Rank" },
+    { title: "Rank", style: "text-center" },
+    { title: "Past Rank", style: "text-center" },
     { title: "Player" },
-    { title: "Characters" },
-    { title: "Rating" },
+    { title: "Characters", style: "text-center" },
+    { title: "Rating", style: "text-center" },
+    { title: "Past Rating", style: "text-center" },
     { title: "W/L", style: "text-right" },
   ];
 
+  let timeDiff;
+  const minuteDiff = dayjs().diff(dayjs(siteData.data.updatedAt), "minute");
+  const hourDiff = dayjs().diff(dayjs(siteData.data.updatedAt), "hour");
+  const dayDiff = dayjs().diff(dayjs(siteData.data.updatedAt), "day");
+
+  if (minuteDiff <= 60) {
+    timeDiff = `${minuteDiff < 1 ? "< 1" : minuteDiff}min ago`;
+  } else if (hourDiff <= 24) {
+    timeDiff = `${hourDiff} ${hourDiff > 1 ? "hrs" : "hr"} ago`;
+  } else {
+    timeDiff = `${dayDiff} d ago`;
+  }
+
   return (
-    <Table className="bg-slate-900">
-      <TableCaption>{dayjs().format("MMMM Do, YYYY")}</TableCaption>
-      <TableHeader>
-        <TableRow>
-          {headerData.map((header) => (
-            <TableHead className={` ${header.style}`} key={header.title}>
-              {header.title}
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {playerData?.data.map((player: PlayerData) => (
-          <TableRow key={player.connect_code}>
-            <TableCell className="font-medium">{player.rank}</TableCell>
-            <TableCell>{player.player_tag}</TableCell>
-            <TableCell>{player.rank}</TableCell>
-            <TableCell>{player.slippi_rating}</TableCell>
-            <TableCell className="text-right">{player.rank}</TableCell>
+    <>
+      <h2>Last Updated: {timeDiff}</h2>
+      <Table className="bg-slate-950 bg-opacity-40">
+        <TableCaption>{dayjs().format("MMMM Do, YYYY")}</TableCaption>
+        <TableHeader>
+          <TableRow>
+            {headerData.map((header) => (
+              <TableHead className={` ${header.style}`} key={header.title}>
+                {header.title}
+              </TableHead>
+            ))}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {playerData?.data.map((player: PlayerData) => (
+            <TableRow key={player.connect_code}>
+              <TableCell className="font-bold text-center">
+                {player.rank}
+              </TableCell>
+              <TableCell className="font-bold text-center">
+                {player.past_rank}
+              </TableCell>
+              <TableCell>{player.slippi_player_tag}</TableCell>
+              <TableCell className="text-center">
+                {player.characters?.length}
+              </TableCell>
+              <TableCell className="text-center">
+                {player.slippi_rating}
+              </TableCell>
+              <TableCell
+                className={`text-center ${
+                  player.slippi_rating !== player.slippi_past_rating
+                    ? "text-green-400"
+                    : ""
+                }`}
+              >
+                {player.slippi_past_rating}
+              </TableCell>
+              <TableCell className="text-right">{player.rank}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
   );
 }
 

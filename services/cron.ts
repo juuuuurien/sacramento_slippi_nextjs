@@ -30,9 +30,10 @@ export async function updatePlayerData() {
       r.getConnectCode.user.rank = rank;
     });
 
+    await prisma.playerCharacter.deleteMany({});
+
     // Update the database with the new rank data.
     let dbPromises = [];
-    dbPromises.push(prisma.playerCharacter.deleteMany({})); // clear the playerCharacter table
 
     for (let r of sortedResults) {
       const currentPlayerData = playerData.find((p) => {
@@ -83,6 +84,7 @@ export async function updatePlayerData() {
         },
         update: {
           totalPlayers: sortedResults.length,
+          updatedAt: new Date(),
         },
         where: {
           id: 1,
@@ -90,9 +92,10 @@ export async function updatePlayerData() {
       })
     );
 
-    await Promise.all(dbPromises);
-    console.log("---- Done Cron ----");
-    console.timeEnd("Finished in");
+    let reses = await Promise.all(dbPromises);
+    console.log("---- Done Cron Test ----");
+    console.log(reses);
+    console.timeEnd("Cron");
   } catch (e) {
     console.error(e);
     return e;

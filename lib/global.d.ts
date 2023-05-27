@@ -12,6 +12,7 @@ export type PlayerData = {
   past_rank: number;
   slippi_player_tag: string;
   slippi_rating: number;
+  slippi_past_rating: number;
   slippi_wins: number;
   slippi_losses: number;
   slippi_daily_global_placement: number;

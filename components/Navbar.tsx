@@ -6,7 +6,7 @@ const NavBar = () => {
   const pathName = usePathname();
   console.log(pathName);
   return (
-    <div className="w-full px-48 bg-slate-950 bg-opacity-50 border-b-[1px] border-slate-900">
+    <div className="fixed w-full px-48 bg-slate-950 bg-opacity-40 border-b-[1px] border-neutral-950 backdrop-blur-sm">
       <nav className="flex justify-between items-center p-5">
         <div className="group flex flex-row gap-3 items-center cursor-pointer">
           <Image
