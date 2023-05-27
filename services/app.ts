@@ -6,6 +6,7 @@ export async function fetchSiteData() {
       next: {
         revalidate: 0,
       },
+      cache: "no-cache",
     })
   ).json();
   return res;

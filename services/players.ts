@@ -6,6 +6,7 @@ export async function fetchPlayerData() {
       next: {
         revalidate: 0,
       },
+      cache: "no-cache",
     })
   ).json();
   return res;
