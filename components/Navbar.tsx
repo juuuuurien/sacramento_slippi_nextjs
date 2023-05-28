@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 const NavBar = () => {
   return (
-    <div className="fixed w-full px-4 sm:px-24 lg:px-48 bg-slate-950 bg-opacity-40 border-b-[1px] border-neutral-950 backdrop-blur-sm">
+    <div className="fixed w-full px-4 sm:px-24 lg:px-48 bg-slate-950 bg-opacity-50 border-b-[1px] border-neutral-950 backdrop-blur-sm z-50">
       <nav className="flex justify-between items-center p-5">
         <div className="group flex flex-row gap-3 items-center cursor-pointer">
           <Image
@@ -21,9 +21,11 @@ const NavBar = () => {
               Manage
             </Link>
           </li>
-          <Link className="hover:text-sky-300 transition-all" href="/">
-            Logout
-          </Link>
+          <li>
+            <Link className="hover:text-sky-300 transition-all" href="/">
+              Logout
+            </Link>
+          </li>
         </ul>
       </nav>
     </div>

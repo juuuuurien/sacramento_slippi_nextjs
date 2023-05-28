@@ -68,9 +68,9 @@ async function PlayerTable() {
     wait(),
   ]);
 
-  console.log(siteData.data);
   const headerData: HeaderData[] = [
-    { title: "Rank", style: "text-center pl-10" },
+    { title: "", style: "text-center pl-10" },
+    { title: "Rank", style: "text-center" },
     { title: "Player" },
     { title: "Characters", style: "text-center" },
     { title: "Rating", style: "text-center" },
@@ -78,6 +78,7 @@ async function PlayerTable() {
   ];
 
   let timeDiff;
+  let nextUpdate;
   const minuteDiff = dayjs().diff(dayjs(siteData.data.updatedAt), "minute");
   const hourDiff = dayjs().diff(dayjs(siteData.data.updatedAt), "hour");
   const dayDiff = dayjs().diff(dayjs(siteData.data.updatedAt), "day");
@@ -90,9 +91,17 @@ async function PlayerTable() {
     timeDiff = `${dayDiff} d ago`;
   }
 
+  // Next update is 30 min after last update.
+  nextUpdate = dayjs(siteData.data.updatedAt)
+    .add(30, "minute")
+    .format("h:mm A");
+
   return (
     <>
-      <h2>Last Updated: {timeDiff}</h2>
+      <div className="flex flex-row justify-between w-full">
+        <span>Updated {timeDiff}</span>
+        <span>Next Update: {nextUpdate}</span>
+      </div>
       <Table className="bg-slate-950 bg-opacity-40">
         <TableCaption>{dayjs().format("MMMM Do, YYYY")}</TableCaption>
         <TableHeader>
@@ -108,8 +117,19 @@ async function PlayerTable() {
           {playerData?.data.map((player: PlayerData) => {
             const rankData = new SlippiRank(player.slippi_rating);
             return (
-              <TableRow key={player.connect_code}>
-                <TableCell className="font-bold text-center pl-10">
+              <TableRow className="h-[130px]" key={player.connect_code}>
+                <TableCell className="h-full p-0 pl-8">
+                  <div className="relative w-[130px] h-full overflow-hidden mx-auto">
+                    <Image
+                      alt="player"
+                      height={115}
+                      width={130}
+                      src={"/img/portraits/falco_portrait.png"}
+                      className="absolute object-cover opacity-60 transition-all"
+                    />
+                  </div>
+                </TableCell>
+                <TableCell className="font-bold text-center">
                   <div className="relative">
                     <span>{player.rank}</span>
                     <span className="absolute right-full">
