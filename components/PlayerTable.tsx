@@ -13,8 +13,12 @@ import { fetchSiteData } from "@/services/app";
 import { fetchPlayerData } from "@/services/players";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import Image from "next/image";
 dayjs.extend(advancedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // type TableProps = {
 //   headerData: HeaderData[];
@@ -92,7 +96,8 @@ async function PlayerTable() {
   }
 
   // Next update is 30 min after last update.
-  nextUpdate = dayjs(siteData.data.updatedAt)
+  nextUpdate = dayjs
+    .tz(siteData.data.updatedAt, "America/Los_Angeles")
     .add(30, "minute")
     .format("h:mm A");
 
