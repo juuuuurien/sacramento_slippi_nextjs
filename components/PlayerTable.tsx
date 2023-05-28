@@ -106,7 +106,7 @@ async function PlayerTable() {
     <>
       <div className="flex flex-row justify-between w-full">
         <span>Updated {timeDiff}</span>
-        <span>Next Update: {nextUpdate}</span>
+        <span>Next Update: {nextUpdate} PST</span>
       </div>
       <Table className="bg-slate-950 bg-opacity-40">
         <TableCaption>{dayjs().format("MMMM Do, YYYY")}</TableCaption>
