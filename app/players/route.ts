@@ -1,8 +1,7 @@
 import { Player } from "@/types";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-export const fetchCache = "force-no-store";
-
+export const revalidate = 0;
 /*
  * @params {Request} request
  * @returns Array of all players

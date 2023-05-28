@@ -162,13 +162,17 @@ async function PlayerTable() {
                       <span>{rankData.displayRating}</span>
                       <span className="absolute left-full">
                         {player.slippi_rating > player.slippi_past_rating && (
-                          <span className="text-green-400 ml-1 text-xs whitespace-nowrap">{`+${Math.abs(
-                            player.slippi_rating - player.slippi_past_rating
+                          <span className="text-green-400 ml-1 text-xs whitespace-nowrap">{`+${Math.floor(
+                            Math.abs(
+                              player.slippi_rating - player.slippi_past_rating
+                            )
                           )}`}</span>
                         )}
                         {player.slippi_rating < player.slippi_past_rating && (
-                          <span className="text-red-400 ml-1 text-xs whitespace-nowrap">{`-${Math.abs(
-                            player.slippi_rating - player.slippi_past_rating
+                          <span className="text-red-400 ml-1 text-xs whitespace-nowrap">{`-${Math.floor(
+                            Math.abs(
+                              player.slippi_rating - player.slippi_past_rating
+                            )
                           )}`}</span>
                         )}
                       </span>

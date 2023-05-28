@@ -4,7 +4,7 @@ export async function fetchPlayerData() {
   const res = await (
     await fetch(`${appUrl}/players`, {
       next: {
-        revalidate: 60,
+        revalidate: 0,
       },
     })
   ).json();
