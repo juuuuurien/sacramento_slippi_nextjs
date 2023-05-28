@@ -125,7 +125,7 @@ async function PlayerTable() {
             return (
               <TableRow className="h-[130px]" key={player.connect_code}>
                 <TableCell className="h-full p-0 pl-8">
-                  <div className="relative w-[130px] h-full overflow-hidden mx-auto">
+                  <div className="relative w-[130px] min-h-[130px] overflow-hidden mx-auto">
                     <Image
                       alt="player"
                       height={115}
