@@ -99,6 +99,7 @@ async function PlayerTable() {
   nextUpdate = dayjs
     .tz(siteData.data.updatedAt, "America/Los_Angeles")
     .add(30, "minute")
+    .subtract(7, "hour")
     .format("h:mm A");
 
   return (
