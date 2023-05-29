@@ -1,6 +1,7 @@
 export type HeaderData = {
   title: string;
   style?: string;
+  headerStyle?: string;
 };
 
 export type PlayerData = {

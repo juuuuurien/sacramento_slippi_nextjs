@@ -16,6 +16,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import Image from "next/image";
+import { characterImages } from "@/lib/constants";
 dayjs.extend(advancedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -74,9 +75,9 @@ async function PlayerTable() {
 
   const headerData: HeaderData[] = [
     { title: "", style: "text-center pl-10" },
-    { title: "Rank", style: "text-center" },
-    { title: "Player" },
-    { title: "Characters", style: "text-center" },
+    { title: "Rank", style: "text-center mr-10" },
+    { title: "Player", style: "" },
+    // { title: "Characters", style: "text-center" },
     { title: "Rating", style: "text-center" },
     { title: "W/L", style: "text-center pr-10" },
   ];
@@ -113,30 +114,36 @@ async function PlayerTable() {
         <TableHeader>
           <TableRow>
             {headerData.map((header) => (
-              <TableHead className={` ${header.style}`} key={header.title}>
-                {header.title}
+              <TableHead key={header.title}>
+                <div className={` ${header.style} `}>{header.title}</div>
               </TableHead>
             ))}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {playerData?.data.map((player: PlayerData) => {
+          {playerData?.data.map((player: PlayerData, i) => {
             const rankData = new SlippiRank(player.slippi_rating);
+            const playerCharacters = player.characters
+              .sort((a, b) => b.gameCount - a.gameCount)
+              .splice(0, 3);
             return (
-              <TableRow className="h-[130px]" key={player.connect_code}>
-                <TableCell className="h-full p-0 pl-8">
-                  <div className="relative w-[130px] min-h-[130px] overflow-hidden mx-auto">
+              <TableRow key={player.connect_code}>
+                <TableCell className="h-[130px] p-0 pl-8">
+                  <div className="relative w-[160px] min-h-full overflow-hidden mx-auto">
                     <Image
                       alt="player"
-                      height={115}
-                      width={130}
-                      src={"/img/portraits/falco_portrait.png"}
+                      height={160}
+                      width={160}
+                      src={`/img/portraits/${
+                        characterImages.get(playerCharacters[0].characterId)
+                          ?.portrait
+                      }`}
                       className="absolute object-cover opacity-60 transition-all"
                     />
                   </div>
                 </TableCell>
-                <TableCell className="font-bold text-center">
-                  <div className="relative">
+                <TableCell className="font-bold text-center text-2xl">
+                  <div className="relative mr-10">
                     <span>{player.rank}</span>
                     <span className="absolute right-full">
                       {player.rank < player.past_rank && (
@@ -171,9 +178,23 @@ async function PlayerTable() {
                   </div>
                 </TableCell>
                 <TableCell>{player.slippi_player_tag}</TableCell>
-                <TableCell className="text-center">
-                  {player.characters?.length}
-                </TableCell>
+                {/* <TableCell className="text-center">
+                  <div className="flex flex-row flex-wrap max-w-[80px] gap-1 justify-center items-center">
+                    {playerCharacters.map((character) => {
+                      return (
+                        <Image
+                          key={`${character.characterId}`}
+                          alt="character"
+                          height="20"
+                          width="20"
+                          src={`/img/characters/${
+                            characterImages.get(character.characterId)?.icon
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                </TableCell> */}
                 <TableCell className="text-center">
                   <div className="flex flex-col gap-1 justify-center items-center">
                     <Image
