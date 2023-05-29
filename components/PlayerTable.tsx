@@ -75,7 +75,7 @@ async function PlayerTable() {
 
   const headerData: HeaderData[] = [
     { title: "", style: "text-center pl-10" },
-    { title: "Rank", style: "text-center mr-10" },
+    { title: "Rank", style: "text-center mx-2 md:mr-10" },
     { title: "Player", style: "" },
     // { title: "Characters", style: "text-center" },
     { title: "Rating", style: "text-center" },
@@ -128,7 +128,7 @@ async function PlayerTable() {
               .splice(0, 3);
             return (
               <TableRow key={player.connect_code}>
-                <TableCell className="h-[130px] p-0 pl-8">
+                <TableCell className="h-[130px] p-0 pl-0 md:pl-8">
                   <div className="relative w-[160px] min-h-full overflow-hidden mx-auto">
                     <Image
                       alt="player"
@@ -142,8 +142,8 @@ async function PlayerTable() {
                     />
                   </div>
                 </TableCell>
-                <TableCell className="font-bold text-center text-2xl">
-                  <div className="relative mr-10">
+                <TableCell className="font-bold text-center text-3xl">
+                  <div className="relative mx-2 md:mr-10">
                     <span>{player.rank}</span>
                     <span className="absolute right-full">
                       {player.rank < player.past_rank && (
