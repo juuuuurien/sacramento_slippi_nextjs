@@ -121,7 +121,7 @@ async function PlayerTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {playerData?.data.map((player: PlayerData, i) => {
+          {playerData?.data.map((player: PlayerData) => {
             const rankData = new SlippiRank(player.slippi_rating);
             const playerCharacters = player.characters
               .sort((a, b) => b.gameCount - a.gameCount)
