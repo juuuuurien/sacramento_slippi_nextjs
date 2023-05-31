@@ -34,6 +34,15 @@ export class SlippiRank {
     2074, 2137, 2192, 2275, 2350,
   ];
 
+  private styles: string[] = [
+    `via-[#4424071a] from-[#67360824] to-[#00000000]`, // Bronze
+    `via-[#292e361a] from-[#444a5540] to-[#00000000]`, // Silver
+    `via-[#4f45041a] from-[#66660040] to-[#00000000]`, // Gold
+    `via-[#044f4e1a] from-[#00665f40] to-[#00000000]`, // Plat
+    `via-[#04074f1a] from-[#00276640] to-[#00000000]`, // Diamond
+    `via-[#16044f1a] from-[#18006640] to-[#00000000]`, // Master
+  ];
+
   private images: string[] = [
     "bronze_1.svg",
     "bronze_2.svg",
@@ -71,7 +80,7 @@ export class SlippiRank {
         // round rating to first decimal
         this.displayRating = Math.floor(this.rating * 10) / 10;
         this.imgSrc = `/img/rankings/${this.images[i - 1]}`;
-        this.style = `todo: fix this`;
+        this.style = this.styles[Math.floor((i - 1) / 3)];
 
         return;
       }
