@@ -179,7 +179,7 @@ async function PlayerTable() {
                         characterImages.get(playerCharacters[0].characterId)
                           ?.portrait
                       }`}
-                      className="absolute object-cover opacity-90 transition-all saturate-[0.65] hover:opacity-100 hover:saturate-100"
+                      className="absolute object-cover opacity-90 transition-all saturate-[0.85] hover:opacity-100 hover:saturate-100"
                     />
                   </div>
                   <div className="flex w-[40px] py-2">
