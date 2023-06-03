@@ -37,12 +37,12 @@ export class SlippiRank {
   // bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
 
   private styles: string[] = [
-    `bg-gradient-to-r from-[#67360824] from-10% via-[#4424071a] to-[#00000000] to-90%`, // Bronze
-    `bg-gradient-to-r from-[#444a5540] from-10% via-[#292e361a] to-[#00000000] to-90%`, // Silver
-    `bg-gradient-to-r from-[#66660040] from-10% via-[#4f45041a] to-[#00000000] to-90%`, // Gold
-    `bg-gradient-to-r from-[#00665f40] from-10% via-[#044f4e1a] to-[#00000000] to-90%`, // Plat
-    `bg-gradient-to-r from-[#00276640] from-10% via-[#04074f1a] to-[#00000000] to-90%`, // Diamond
-    `bg-gradient-to-r from-[#18006640] from-10% via-[#16044f1a] to-[#00000000] to-90%`, // Master
+    "bg-gradient-to-r from-[#67360824] from-10% via-[#4424071a] to-[#00000000] to-90%", // Bronze
+    "bg-gradient-to-r from-[#444a5540] from-10% via-[#292e361a] to-[#00000000] to-90%", // Silver
+    "bg-gradient-to-r from-[#66660040] from-10% via-[#4f45041a] to-[#00000000] to-90%", // Gold
+    "bg-gradient-to-r from-[#00665f40] from-10% via-[#044f4e1a] to-[#00000000] to-90%", // Plat
+    "bg-gradient-to-r from-[#00276640] from-10% via-[#04074f1a] to-[#00000000] to-90%", // Diamond
+    "bg-gradient-to-r from-[#18006640] from-10% via-[#16044f1a] to-[#00000000] to-90%", // Master
     // `bg-[#67360824]`, // Bronze
     // `bg-[#444a5540]`, // Silver
     // `bg-[#66660040]`, // Gold
@@ -104,7 +104,7 @@ export class SlippiRank {
   public getRankStyle(): string | undefined {
     for (let i = 0; i < this.thresholds.length; i++) {
       if (this.rating < this.thresholds[i]) {
-        return this.styles[Math.floor((i - 1) / 3)].toString();
+        return this.styles[Math.floor((i - 1) / 3)];
       }
     }
   }

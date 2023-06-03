@@ -9,7 +9,7 @@ import {
 import { characterImages } from "@/lib/constants";
 import { HeaderData, PlayerData } from "@/lib/global";
 import { SlippiRank } from "@/lib/ranking";
-import { cn } from "@/lib/utils";
+import { cn, getRowStyle } from "@/lib/utils";
 import { fetchSiteData } from "@/services/app";
 import { fetchPlayerData } from "@/services/players";
 import dayjs from "dayjs";
@@ -20,11 +20,6 @@ import Image from "next/image";
 dayjs.extend(advancedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-// type TableProps = {
-//   headerData: HeaderData[];
-//   playerData: PlayerData[];
-// };
 
 export const LoadingTable = () => {
   return (
@@ -76,7 +71,6 @@ async function PlayerTable() {
     { title: "Rank", style: "text-center" },
     { title: "", style: "text-center pl-10" },
     { title: "Player", style: "text-right" },
-    // { title: "Characters", style: "text-center" },
     { title: "Rating", style: "text-center" },
     { title: "W/L", style: "text-center pr-10" },
   ];
@@ -95,7 +89,6 @@ async function PlayerTable() {
     timeDiff = `${dayDiff} d ago`;
   }
 
-  // Next update is 30 min after last update.
   nextUpdate = dayjs
     .tz(siteData.data.updatedAt, "America/Los_Angeles")
     .add(30, "minute")
@@ -126,12 +119,16 @@ async function PlayerTable() {
               .map((pc) => pc.gameCount)
               .reduce((acc, gc) => acc + gc, 0);
 
-            const rowStyle = cn("border-b-[#092652]", rankData.getRankStyle());
+            const style = rankData.style;
+            const rowStyle = cn(
+              "border-b-[#092652]",
+              getRowStyle(rankData.rankName)
+            );
             return (
               <TableRow className={`${rowStyle}`} key={player.connect_code}>
-                <TableCell className="font-semibold text-center text-3xl">
+                <TableCell className="font-semibold text-center">
                   <div className="relative">
-                    <span>{player.rank}</span>
+                    <span className="text-3xl">{`${player.rank}`}</span>
                     <span className="absolute right-0 bottom-0">
                       {player.rank < player.past_rank && (
                         <svg
