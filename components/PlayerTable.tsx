@@ -3,21 +3,20 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { characterImages } from "@/lib/constants";
 import { HeaderData, PlayerData } from "@/lib/global";
 import { SlippiRank } from "@/lib/ranking";
+import { cn } from "@/lib/utils";
 import { fetchSiteData } from "@/services/app";
 import { fetchPlayerData } from "@/services/players";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import Image from "next/image";
-import { characterImages } from "@/lib/constants";
-import { cn } from "@/lib/utils";
 dayjs.extend(advancedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -111,29 +110,25 @@ async function PlayerTable() {
       </div>
       <Table className="bg-slate-950 bg-opacity-40">
         <TableCaption>{dayjs().format("MMMM Do, YYYY")}</TableCaption>
-        {/* <TableHeader>
-          <TableRow className="bg-slate-900 border-[#092652] border-0 border-t-[#092652]">
-            {headerData.map((header) => (
-              <TableHead key={header.title}>
-                <div className={` ${header.style} `}>{header.title}</div>
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader> */}
+
         <TableBody>
           {playerData?.data.map((player: PlayerData) => {
-            const rankData = new SlippiRank(player.slippi_rating);
+            const rankData = new SlippiRank(
+              player.slippi_rating,
+              player.slippi_wins,
+              player.slippi_losses
+            );
             const playerCharacters = player.characters
               .sort((a, b) => b.gameCount - a.gameCount)
               .splice(0, 3);
+            const totalChars = player.characters.length;
+            const totalGameCount = playerCharacters
+              .map((pc) => pc.gameCount)
+              .reduce((acc, gc) => acc + gc, 0);
+
+            const rowStyle = cn("border-b-[#092652]", rankData.getRankStyle());
             return (
-              <TableRow
-                className={cn(
-                  "border-b-[#092652] bg-gradient-to-l via-[#4424071a] from-[#67360824] to-[#00000000]",
-                  rankData.style
-                )}
-                key={player.connect_code}
-              >
+              <TableRow className={`${rowStyle}`} key={player.connect_code}>
                 <TableCell className="font-semibold text-center text-3xl">
                   <div className="relative">
                     <span>{player.rank}</span>
@@ -169,8 +164,8 @@ async function PlayerTable() {
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="flex flex-row h-[110px] p-0 pl-0 xl:pl-10">
-                  <div className="relative w-full min-w-[100px] max-w-[160px] m-0 min-h-full overflow-hidden">
+                <TableCell className="relative flex flex-row h-[110px] p-0 pl-0 xl:pl-10">
+                  <div className="group relative w-full min-w-[100px] max-w-[160px] m-0 min-h-full overflow-hidden">
                     <Image
                       alt="player"
                       height={160}
@@ -181,29 +176,55 @@ async function PlayerTable() {
                       }`}
                       className="absolute object-cover opacity-90 transition-all saturate-[0.85] hover:opacity-100 hover:saturate-100"
                     />
+                    <span className="absolute p-1 px-2 bg-slate-800 text-white rounded-md right-5 top-1 text-xs opacity-0 transition-all group-hover:opacity-100">
+                      {`${
+                        Math.floor(
+                          (playerCharacters[0].gameCount / totalGameCount) *
+                            10000
+                        ) / 100
+                      }%`}
+                    </span>
                   </div>
-                  <div className="flex w-[40px] py-2">
-                    <div className="flex flex-row self-end">
+
+                  <div className="flex w-[120px] py-2">
+                    <div className="flex flex-row self-end gap-1">
                       {playerCharacters.splice(1, 3).map((character) => {
                         return (
-                          <Image
+                          <div
                             key={`${character.characterId}`}
-                            alt="character"
-                            height="20"
-                            width="20"
-                            src={`/img/characters/${
-                              characterImages.get(character.characterId)?.icon
-                            }`}
-                            className="opacity-60 transition-all hover:opacity-100"
-                          />
+                            className="group relative"
+                          >
+                            <Image
+                              key={`${character.characterId}`}
+                              alt="character"
+                              height="20"
+                              width="20"
+                              src={`/img/characters/${
+                                characterImages.get(character.characterId)?.icon
+                              }`}
+                              className="opacity-60 transition-all hover:opacity-100"
+                            />
+                            <span className="absolute p-1 px-2 bg-slate-800 text-white rounded-md left-full bottom-full text-xs opacity-0 transition-all group-hover:opacity-100">
+                              {`${
+                                Math.floor(
+                                  (character.gameCount / totalGameCount) * 10000
+                                ) / 100
+                              }%`}
+                            </span>
+                          </div>
                         );
                       })}
+                      {totalChars > 3 && (
+                        <span className="whitespace-nowrap">{`+${
+                          totalChars - 3
+                        } more`}</span>
+                      )}
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="max-w-[110px] p-0">
-                  <div className="w-full text-right overflow-x-hidden text-ellipsis">
-                    <span className="relative flex flex-col text-lg md:text-2xl uppercase font-extrabold italic">
+                <TableCell className="p-0">
+                  <div className="w-full text-right overflow-x-hidden">
+                    <span className="relative flex flex-col text-lg md:text-xl uppercase font-extrabold italic break-words">
                       {player.slippi_player_tag}
                       <span className="font-semibold not-italic text-sm text-slate-500">
                         {rankData.displayRating}
@@ -233,24 +254,6 @@ async function PlayerTable() {
                     </span>
                   </div>
                 </TableCell>
-
-                {/* <TableCell className="text-center">
-                  <div className="flex flex-row flex-wrap max-w-[80px] gap-1 justify-center items-center">
-                    {playerCharacters.map((character) => {
-                      return (
-                        <Image
-                          key={`${character.characterId}`}
-                          alt="character"
-                          height="20"
-                          width="20"
-                          src={`/img/characters/${
-                            characterImages.get(character.characterId)?.icon
-                          }`}
-                        />
-                      );
-                    })}
-                  </div>
-                </TableCell> */}
                 <TableCell>
                   <div className="flex flex-col md:flex-row gap-2 justify-center items-center">
                     <Image
@@ -264,8 +267,12 @@ async function PlayerTable() {
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="text-center pr-10">
-                  {`${player.slippi_wins} / ${player.slippi_losses}`}
+                <TableCell>
+                  <div className="flex flex-row justify-center items-center h-full text-center pr-10 gap-1 font-semibold text-md">
+                    <span className="text-green-400">{`${player.slippi_wins}`}</span>
+                    <span>{"/"}</span>
+                    <span className="text-red-400">{`${player.slippi_losses}`}</span>
+                  </div>
                 </TableCell>
               </TableRow>
             );

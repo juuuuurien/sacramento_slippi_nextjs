@@ -34,13 +34,21 @@ export class SlippiRank {
     2074, 2137, 2192, 2275, 2350,
   ];
 
+  // bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
+
   private styles: string[] = [
-    `via-[#4424071a] from-[#67360824] to-[#00000000]`, // Bronze
-    `via-[#292e361a] from-[#444a5540] to-[#00000000]`, // Silver
-    `via-[#4f45041a] from-[#66660040] to-[#00000000]`, // Gold
-    `via-[#044f4e1a] from-[#00665f40] to-[#00000000]`, // Plat
-    `via-[#04074f1a] from-[#00276640] to-[#00000000]`, // Diamond
-    `via-[#16044f1a] from-[#18006640] to-[#00000000]`, // Master
+    `bg-gradient-to-r from-[#67360824] from-10% via-[#4424071a] to-[#00000000] to-90%`, // Bronze
+    `bg-gradient-to-r from-[#444a5540] from-10% via-[#292e361a] to-[#00000000] to-90%`, // Silver
+    `bg-gradient-to-r from-[#66660040] from-10% via-[#4f45041a] to-[#00000000] to-90%`, // Gold
+    `bg-gradient-to-r from-[#00665f40] from-10% via-[#044f4e1a] to-[#00000000] to-90%`, // Plat
+    `bg-gradient-to-r from-[#00276640] from-10% via-[#04074f1a] to-[#00000000] to-90%`, // Diamond
+    `bg-gradient-to-r from-[#18006640] from-10% via-[#16044f1a] to-[#00000000] to-90%`, // Master
+    // `bg-[#67360824]`, // Bronze
+    // `bg-[#444a5540]`, // Silver
+    // `bg-[#66660040]`, // Gold
+    // `bg-[#00665f40]`, // Plat
+    // `bg-[#00276640]`, // Diamond
+    // `bg-[#18006640]`, // Master
   ];
 
   private images: string[] = [
@@ -71,7 +79,7 @@ export class SlippiRank {
   public style: string;
 
   //   Todo: Update grandmaster, no rank, and pending logic.
-  constructor(rating: number) {
+  constructor(rating: number, wins: number, losses: number) {
     this.rating = rating;
 
     for (let i = 0; i < this.thresholds.length; i++) {
@@ -91,5 +99,13 @@ export class SlippiRank {
     this.displayRating = Math.floor(this.rating);
     this.imgSrc = `/img/rankings/${this.images[this.images.length - 1]}`;
     this.style = `todo: fix this`;
+  }
+
+  public getRankStyle(): string | undefined {
+    for (let i = 0; i < this.thresholds.length; i++) {
+      if (this.rating < this.thresholds[i]) {
+        return this.styles[Math.floor((i - 1) / 3)].toString();
+      }
+    }
   }
 }
