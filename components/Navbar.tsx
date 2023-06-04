@@ -15,7 +15,7 @@ const NavBar = () => {
             Sacramento Slippi Power Rankings
           </span>
         </div>
-        <ul className="flex flex-row gap-5 invisible sm:visible">
+        {/* <ul className="flex flex-row gap-5 invisible sm:visible">
           <li>
             <Link className="hover:text-sky-300 transition-all" href="/">
               Manage
@@ -26,7 +26,7 @@ const NavBar = () => {
               Logout
             </Link>
           </li>
-        </ul>
+        </ul> */}
       </nav>
     </div>
   );

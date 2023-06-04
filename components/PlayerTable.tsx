@@ -52,9 +52,6 @@ export const LoadingTable = () => {
   );
 };
 
-async function wait() {
-  return new Promise((resolve) => setTimeout(resolve, 1000));
-}
 async function PlayerTable() {
   dayjs.extend(advancedFormat);
 
@@ -64,7 +61,6 @@ async function PlayerTable() {
   const [playerData, siteData] = await Promise.all([
     playerDataPromise,
     siteDataPromise,
-    wait(),
   ]);
 
   const headerData: HeaderData[] = [
@@ -119,11 +115,7 @@ async function PlayerTable() {
               .map((pc) => pc.gameCount)
               .reduce((acc, gc) => acc + gc, 0);
 
-            const style = rankData.style;
-            const rowStyle = cn(
-              "border-b-[#092652]",
-              getRowStyle(rankData.rankName)
-            );
+            const rowStyle = cn("border-b-[#092652]", rankData.style);
             return (
               <TableRow className={`${rowStyle}`} key={player.connect_code}>
                 <TableCell className="font-semibold text-center">
@@ -183,13 +175,13 @@ async function PlayerTable() {
                     </span>
                   </div>
 
-                  <div className="flex w-[120px] py-2">
-                    <div className="flex flex-row self-end gap-1">
+                  <div className="flex">
+                    <div className="relative flex flex-row self-end gap-1">
                       {playerCharacters.splice(1, 3).map((character) => {
                         return (
                           <div
                             key={`${character.characterId}`}
-                            className="group relative"
+                            className="group relative min-w-[20px]"
                           >
                             <Image
                               key={`${character.characterId}`}
@@ -212,7 +204,7 @@ async function PlayerTable() {
                         );
                       })}
                       {totalChars > 3 && (
-                        <span className="whitespace-nowrap">{`+${
+                        <span className="absolute left-[110%] whitespace-nowrap text-xs">{`+${
                           totalChars - 3
                         } more`}</span>
                       )}
@@ -221,9 +213,27 @@ async function PlayerTable() {
                 </TableCell>
                 <TableCell className="p-0">
                   <div className="w-full text-right overflow-x-hidden">
-                    <span className="relative flex flex-col text-lg md:text-xl uppercase font-extrabold italic break-words">
-                      {player.slippi_player_tag}
-                      <span className="font-semibold not-italic text-sm text-slate-500">
+                    <div className="relative flex flex-col text-lg md:text-xl uppercase font-extrabold italic break-words">
+                      <span>{player.slippi_player_tag}</span>
+                      <span className="font-normal text-sm text-slate-500">
+                        {player.connect_code}
+                      </span>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col md:flex-row gap-2 justify-center items-center">
+                    <Image
+                      alt="rank"
+                      height="36"
+                      width="36"
+                      src={rankData.imgSrc}
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-center text-md md:text-lg uppercase">
+                        {rankData.rankName}
+                      </span>
+                      <span className="font-normal not-italic text-sm text-slate-500">
                         {rankData.displayRating}
                         <span className="">
                           {player.slippi_rating > player.slippi_past_rating && (
@@ -248,20 +258,7 @@ async function PlayerTable() {
                           )}
                         </span>
                       </span>
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-col md:flex-row gap-2 justify-center items-center">
-                    <Image
-                      alt="rank"
-                      height="36"
-                      width="36"
-                      src={rankData.imgSrc}
-                    />
-                    <span className="font-bold text-center text-md md:text-lg uppercase">
-                      {rankData.rankName}
-                    </span>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell>

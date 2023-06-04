@@ -77,6 +77,25 @@ a {
   text-decoration: none;
 }
 
+.bronze-rank {
+  background-image: linear-gradient(to left, #67360845, #4424071a);
+}
+.silver-rank {
+  background-image: linear-gradient(to left, #5d687d4e, #292e361a);
+}
+.gold-rank {
+  background-image: linear-gradient(to left, #7e7e0452, #4f45041a);
+}
+.platinum-rank {
+  background-image: linear-gradient(to left, #0479714e, #044f4e1a);
+}
+.diamond-rank {
+  background-image: linear-gradient(to left, #10409f4e, #0611681a);
+}
+.master-rank {
+  background-image: linear-gradient(to left, #1e027a6e, #16044f1a);
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
