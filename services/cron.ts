@@ -116,8 +116,17 @@ export async function updateDailyPlayerData() {
     }
 
     const promises = playerData.map((p) => {
-      return prisma.dailyPlayerStats.create({
-        data: {
+      return prisma.dailyPlayerStats.upsert({
+        where: {
+          playerId: p.id,
+        },
+        create: {
+          playerId: p.id,
+          daily_rank: p.rank,
+          daily_slippi_rating: p.slippi_rating,
+        },
+
+        update: {
           playerId: p.id,
           daily_rank: p.rank,
           daily_slippi_rating: p.slippi_rating,
