@@ -4,7 +4,6 @@ import { Prisma, PrismaClient } from "@prisma/client";
 // import { main } from "./migrations/05_23_2023_seed_player_table";
 // import { main } from "./migrations/2023-05-24_1684912781_seed_players_with_slippi_data";
 const prisma = new PrismaClient();
-
 // need to reseed all the fucking data rip.
 
 // const CHARACTERS = [
@@ -53,134 +52,156 @@ const prisma = new PrismaClient();
 //   console.log("Created characters: ", characters);
 // }
 
-async function getSlippiData(cc: string) {
-  const slippiQuery = `fragment userProfilePage on User {
-    displayName
-    connectCode {
-        code
-        }
-    rankedNetplayProfile {
-            id
-            ratingOrdinal
-            ratingUpdateCount
-            wins
-            losses
-            dailyGlobalPlacement
-            dailyRegionalPlacement
-            continent
-            characters {
-                    id
-                    character
-                    gameCount
-                }
-        }
-}
-query AccountManagementPageQuery($cc: String!) {
-    getConnectCode(code: $cc) {
-            user {
-                    ...userProfilePage
-                }
-        }
-}`;
+// async function getSlippiData(cc: string) {
+//   const slippiQuery = `fragment userProfilePage on User {
+//     displayName
+//     connectCode {
+//         code
+//         }
+//     rankedNetplayProfile {
+//             id
+//             ratingOrdinal
+//             ratingUpdateCount
+//             wins
+//             losses
+//             dailyGlobalPlacement
+//             dailyRegionalPlacement
+//             continent
+//             characters {
+//                     id
+//                     character
+//                     gameCount
+//                 }
+//         }
+// }
+// query AccountManagementPageQuery($cc: String!) {
+//     getConnectCode(code: $cc) {
+//             user {
+//                     ...userProfilePage
+//                 }
+//         }
+// }`;
 
-  const { data } = await (
-    await fetch("https://gql-gateway-dot-slippi.uc.r.appspot.com/graphql", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        operationName: "AccountManagementPageQuery",
-        query: slippiQuery,
-        variables: {
-          cc: cc,
-        },
-      }),
-    })
-  ).json();
+//   const { data } = await (
+//     await fetch("https://gql-gateway-dot-slippi.uc.r.appspot.com/graphql", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         operationName: "AccountManagementPageQuery",
+//         query: slippiQuery,
+//         variables: {
+//           cc: cc,
+//         },
+//       }),
+//     })
+//   ).json();
 
-  return data;
-}
+//   return data;
+// }
 
-const main = async () => {
-  try {
-    let playerData = await prisma.player.findMany({});
-    let connectCodes = playerData.map((p) => {
-      return p.connect_code;
-    });
-    // console.log(connectCodes);
-    let promises: Promise<SlippiPlayerData>[] = [];
-    connectCodes.forEach((cc) => {
-      promises.push(getSlippiData(cc));
-    });
+// const main = async () => {
+//   try {
+//     let playerData = await prisma.player.findMany({});
+//     let connectCodes = playerData.map((p) => {
+//       return p.connect_code;
+//     });
+//     // console.log(connectCodes);
+//     let promises: Promise<SlippiPlayerData>[] = [];
+//     connectCodes.forEach((cc) => {
+//       promises.push(getSlippiData(cc));
+//     });
 
-    const results = await Promise.all(promises);
-    const sortedResults = results.sort((a, b) => {
-      return a.getConnectCode.user.rankedNetplayProfile.ratingOrdinal <
-        b.getConnectCode.user.rankedNetplayProfile.ratingOrdinal
-        ? 1
-        : -1;
-    });
+//     const results = await Promise.all(promises);
+//     const sortedResults = results.sort((a, b) => {
+//       return a.getConnectCode.user.rankedNetplayProfile.ratingOrdinal <
+//         b.getConnectCode.user.rankedNetplayProfile.ratingOrdinal
+//         ? 1
+//         : -1;
+//     });
 
-    sortedResults.forEach((r, i) => {
-      let rank = i + 1;
-      r.getConnectCode.user.rank = rank;
-    });
+//     sortedResults.forEach((r, i) => {
+//       let rank = i + 1;
+//       r.getConnectCode.user.rank = rank;
+//     });
 
-    // Update the database with the new rank data.
-    let dbPromises = [];
-    dbPromises.push(prisma.playerCharacter.deleteMany({})); // clear the playerCharacter table
+//     // Update the database with the new rank data.
+//     let dbPromises = [];
+//     dbPromises.push(prisma.playerCharacter.deleteMany({})); // clear the playerCharacter table
 
-    for (let r of sortedResults) {
-      const currentPlayerData = playerData.find((p) => {
-        return r.getConnectCode.user.connectCode.code === p.connect_code;
-      });
+//     for (let r of sortedResults) {
+//       const currentPlayerData = playerData.find((p) => {
+//         return r.getConnectCode.user.connectCode.code === p.connect_code;
+//       });
 
-      let currentRank = currentPlayerData?.rank;
-      let currentSlippiRating = currentPlayerData?.slippi_rating ?? 0;
+//       let currentRank = currentPlayerData?.rank;
+//       let currentSlippiRating = currentPlayerData?.slippi_rating ?? 0;
 
-      const promise = prisma.player.update({
-        where: {
-          connect_code: r.getConnectCode.user.connectCode.code,
-        },
-        data: {
-          rank: r.getConnectCode.user.rank,
-          past_rank: currentRank,
-          slippi_player_tag: r.getConnectCode.user.displayName,
-          slippi_rating: new Prisma.Decimal(
-            r.getConnectCode.user.rankedNetplayProfile.ratingOrdinal
-          ),
-          slippi_past_rating: new Prisma.Decimal(currentSlippiRating),
-          slippi_daily_global_placement:
-            r.getConnectCode.user.rankedNetplayProfile.dailyGlobalPlacement,
-          slippi_daily_regional_placement:
-            r.getConnectCode.user.rankedNetplayProfile.dailyRegionalPlacement,
-          slippi_wins: r.getConnectCode.user.rankedNetplayProfile.wins ?? 0,
-          slippi_losses: r.getConnectCode.user.rankedNetplayProfile.losses ?? 0,
-          characters: {
-            create: r.getConnectCode.user.rankedNetplayProfile.characters.map(
-              (c) => {
-                return {
-                  characterId: c.character,
-                  gameCount: c.gameCount,
-                };
-              }
-            ),
-          },
-        },
-      });
+//       const promise = prisma.player.update({
+//         where: {
+//           connect_code: r.getConnectCode.user.connectCode.code,
+//         },
+//         data: {
+//           rank: r.getConnectCode.user.rank,
+//           past_rank: currentRank,
+//           slippi_player_tag: r.getConnectCode.user.displayName,
+//           slippi_rating: new Prisma.Decimal(
+//             r.getConnectCode.user.rankedNetplayProfile.ratingOrdinal
+//           ),
+//           slippi_past_rating: new Prisma.Decimal(currentSlippiRating),
+//           slippi_daily_global_placement:
+//             r.getConnectCode.user.rankedNetplayProfile.dailyGlobalPlacement,
+//           slippi_daily_regional_placement:
+//             r.getConnectCode.user.rankedNetplayProfile.dailyRegionalPlacement,
+//           slippi_wins: r.getConnectCode.user.rankedNetplayProfile.wins ?? 0,
+//           slippi_losses: r.getConnectCode.user.rankedNetplayProfile.losses ?? 0,
+//           characters: {
+//             create: r.getConnectCode.user.rankedNetplayProfile.characters.map(
+//               (c) => {
+//                 return {
+//                   characterId: c.character,
+//                   gameCount: c.gameCount,
+//                 };
+//               }
+//             ),
+//           },
+//         },
+//       });
 
-      dbPromises.push(promise);
-    }
+//       dbPromises.push(promise);
+//     }
 
-    const dbPromiseResults = await Promise.all(dbPromises);
+//     const dbPromiseResults = await Promise.all(dbPromises);
 
-    console.log("Done ---- ", dbPromiseResults);
-  } catch (e) {
-    console.error(e);
-    return e;
+//     console.log("Done ---- ", dbPromiseResults);
+//   } catch (e) {
+//     console.error(e);
+//     return e;
+//   }
+// };
+
+async function main() {
+  // Populate the daily player stats table.
+  const playerData = await prisma.player.findMany({});
+  if (!playerData) {
+    console.log("No player data found.");
+    throw new Error("No player data found.");
   }
-};
+
+  const promises = playerData.map((p) => {
+    return prisma.dailyPlayerStats.create({
+      data: {
+        playerId: p.id,
+        daily_rank: p.rank,
+        daily_slippi_rating: p.slippi_rating,
+      },
+    });
+  });
+
+  const results = await Promise.all(promises);
+  console.log("Done!");
+}
 
 main()
   .catch((err) => {

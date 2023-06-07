@@ -11,8 +11,8 @@ const NavBar = () => {
             height={40}
             alt="Sac Slippi Logo"
           />
-          <span className="font-semibold group-hover:text-sky-300 transition-all">
-            Sacramento Slippi Power Rankings
+          <span className="font-bold uppercase italic group-hover:text-sky-300 transition-all">
+            Sacramento Slippi Leaderboard
           </span>
         </div>
         {/* <ul className="flex flex-row gap-5 invisible sm:visible">

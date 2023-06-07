@@ -100,7 +100,7 @@ async function PlayerTable() {
       <Table className="bg-slate-950 bg-opacity-40">
         <TableCaption>{dayjs().format("MMMM Do, YYYY")}</TableCaption>
 
-        <TableBody>
+        <TableBody className="rounded-xl overflow-hidden">
           {playerData?.data.map((player: PlayerData) => {
             const rankData = new SlippiRank(
               player.slippi_rating,
@@ -153,18 +153,19 @@ async function PlayerTable() {
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="relative flex flex-row h-[110px] p-0 pl-0 xl:pl-10">
+                <TableCell className="relative hidden lg:flex flex-row h-[110px] p-0 pl-0 xl:pl-10 mix-blend-plus-lighter">
                   <div className="group relative w-full min-w-[100px] max-w-[160px] m-0 min-h-full overflow-hidden">
-                    <Image
-                      alt="player"
-                      height={160}
-                      width={140}
-                      src={`/img/portraits/${
-                        characterImages.get(playerCharacters[0].characterId)
-                          ?.portrait
-                      }`}
-                      className="absolute object-cover opacity-90 transition-all saturate-[0.85] hover:opacity-100 hover:saturate-100"
-                    />
+                    <div className="absolute w-full h-full">
+                      <Image
+                        alt="player"
+                        fill
+                        src={`/img/portraits/${
+                          characterImages.get(playerCharacters[0].characterId)
+                            ?.portrait
+                        }`}
+                        className="object-cover object-top opacity-60 transition-all saturate-[0.85] hover:opacity-100 hover:saturate-100"
+                      />
+                    </div>
                     <span className="absolute p-1 px-2 bg-slate-800 text-white rounded-md right-5 top-1 text-xs opacity-0 transition-all group-hover:opacity-100">
                       {`${
                         Math.floor(
@@ -174,8 +175,7 @@ async function PlayerTable() {
                       }%`}
                     </span>
                   </div>
-
-                  <div className="flex">
+                  <div className="flex absolute bottom-[0.5rem] left-full">
                     <div className="relative flex flex-row self-end gap-1">
                       {playerCharacters.splice(1, 3).map((character) => {
                         return (
@@ -204,7 +204,7 @@ async function PlayerTable() {
                         );
                       })}
                       {totalChars > 3 && (
-                        <span className="absolute left-[110%] whitespace-nowrap text-xs">{`+${
+                        <span className="whitespace-nowrap text-xs">{`+${
                           totalChars - 3
                         } more`}</span>
                       )}
@@ -212,8 +212,8 @@ async function PlayerTable() {
                   </div>
                 </TableCell>
                 <TableCell className="p-0">
-                  <div className="w-full text-right overflow-x-hidden">
-                    <div className="relative flex flex-col text-lg md:text-xl uppercase font-extrabold italic break-words">
+                  <div className="w-full text-center lg:text-right overflow-x-hidden">
+                    <div className="relative flex flex-col text-lg lg:text-xl uppercase font-extrabold italic break-words">
                       <span>{player.slippi_player_tag}</span>
                       <span className="font-normal text-sm text-slate-500">
                         {player.connect_code}
@@ -222,7 +222,7 @@ async function PlayerTable() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-col md:flex-row gap-2 justify-center items-center">
+                  <div className="flex flex-col lg:flex-row gap-2 justify-center items-center">
                     <Image
                       alt="rank"
                       height="36"
@@ -230,10 +230,10 @@ async function PlayerTable() {
                       src={rankData.imgSrc}
                     />
                     <div className="flex flex-col">
-                      <span className="font-bold text-center text-md md:text-lg uppercase">
+                      <span className="font-bold text-center text-md lg:text-lg uppercase whitespace-nowrap">
                         {rankData.rankName}
                       </span>
-                      <span className="font-normal not-italic text-sm text-slate-500">
+                      <span className="text-center lg:text-left lg:font-normal not-italic text-sm text-slate-500">
                         {rankData.displayRating}
                         <span className="">
                           {player.slippi_rating > player.slippi_past_rating && (

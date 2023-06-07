@@ -4,6 +4,7 @@ import { getSlippiData } from "./slippi";
 
 export async function updatePlayerData() {
   const prisma = new PrismaClient();
+
   const timer = console.time("Cron");
   try {
     let playerData = await prisma.player.findMany({});
@@ -96,6 +97,36 @@ export async function updatePlayerData() {
     console.log("---- Done Cron Test ----");
     console.log(reses);
     console.timeEnd("Cron");
+  } catch (e) {
+    console.error(e);
+    return e;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updateDailyPlayerData() {
+  const prisma = new PrismaClient();
+  try {
+    // Populate the daily player stats table.
+    const playerData = await prisma.player.findMany({});
+    if (!playerData) {
+      console.log("No player data found.");
+      throw new Error("No player data found.");
+    }
+
+    const promises = playerData.map((p) => {
+      return prisma.dailyPlayerStats.create({
+        data: {
+          playerId: p.id,
+          daily_rank: p.rank,
+          daily_slippi_rating: p.slippi_rating,
+        },
+      });
+    });
+
+    const results = await Promise.all(promises);
+    console.log("Done!");
   } catch (e) {
     console.error(e);
     return e;

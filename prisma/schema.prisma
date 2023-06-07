@@ -27,7 +27,20 @@ model Player {
   slippi_daily_regional_placement Int?
   createdAt                       DateTime          @default(now())
   updatedAt                       DateTime          @updatedAt
+  dailyStats                      DailyPlayerStats?
   characters                      PlayerCharacter[]
+}
+
+model DailyPlayerStats {
+  id                  String   @id @default(uuid())
+  player              Player   @relation(fields: [playerId], references: [id])
+  playerId            String   @unique
+  daily_rank          Int?
+  daily_slippi_rating Decimal?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([playerId])
 }
 
 model Character {
