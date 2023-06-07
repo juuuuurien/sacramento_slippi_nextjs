@@ -12,6 +12,7 @@ export async function GET() {
       orderBy: { rank: "asc" },
       include: {
         characters: true,
+        dailyStats: true,
       },
     });
     // console.log("Successfully retrieved players. ", players);

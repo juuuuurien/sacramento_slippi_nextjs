@@ -1,3 +1,5 @@
+import type { DailyPlayerStats } from "@prisma/client";
+
 export type HeaderData = {
   title: string;
   style?: string;
@@ -21,6 +23,7 @@ export type PlayerData = {
   createdAt: string;
   updatedAt: string;
   characters: Array<PlayerCharacter>;
+  dailyStats: DailyPlayerStats;
 };
 
 export type SlippiPlayerData = {

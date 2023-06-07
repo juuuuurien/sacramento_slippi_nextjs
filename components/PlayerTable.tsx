@@ -12,6 +12,8 @@ import { SlippiRank } from "@/lib/ranking";
 import { cn, getRowStyle } from "@/lib/utils";
 import { fetchSiteData } from "@/services/app";
 import { fetchPlayerData } from "@/services/players";
+import { Prisma } from "@prisma/client";
+import type { Player, PlayerCharacter, DailyPlayerStats } from "@prisma/client";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import timezone from "dayjs/plugin/timezone";
@@ -122,34 +124,36 @@ async function PlayerTable() {
                   <div className="relative">
                     <span className="text-3xl">{`${player.rank}`}</span>
                     <span className="absolute right-0 bottom-0">
-                      {player.rank < player.past_rank && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          className="w-6 h-6 text-green-400 inline-block ml-1"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                      {player.rank > player.past_rank && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          className="w-6 h-6 text-red-400 inline-block ml-1"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
+                      {player.dailyStats.daily_rank &&
+                        player.rank < player.dailyStats.daily_rank && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            className="w-6 h-6 text-green-400 inline-block ml-1"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      {player.dailyStats.daily_rank &&
+                        player.rank > player.dailyStats.daily_rank && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            className="w-6 h-6 text-red-400 inline-block ml-1"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
                     </span>
                   </div>
                 </TableCell>
@@ -236,26 +240,30 @@ async function PlayerTable() {
                       <span className="text-center lg:text-left lg:font-normal not-italic text-sm text-slate-500">
                         {rankData.displayRating}
                         <span className="">
-                          {player.slippi_rating > player.slippi_past_rating && (
-                            <span className="text-green-400 ml-1 text-xs whitespace-nowrap">{`+${
-                              Math.floor(
-                                Math.abs(
-                                  player.slippi_rating -
-                                    player.slippi_past_rating
-                                ) * 10
-                              ) / 10
-                            }`}</span>
-                          )}
-                          {player.slippi_rating < player.slippi_past_rating && (
-                            <span className="text-red-400 ml-1 text-xs whitespace-nowrap">{`-${
-                              Math.floor(
-                                Math.abs(
-                                  player.slippi_rating -
-                                    player.slippi_past_rating
-                                ) * 10
-                              ) / 10
-                            }`}</span>
-                          )}
+                          {player.dailyStats.daily_slippi_rating &&
+                            new Prisma.Decimal(player.slippi_rating) >
+                              player.dailyStats.daily_slippi_rating && (
+                              <span className="text-green-400 ml-1 text-xs whitespace-nowrap">{`+${
+                                Math.floor(
+                                  Math.abs(
+                                    player.slippi_rating -
+                                      player.slippi_past_rating
+                                  ) * 10
+                                ) / 10
+                              }`}</span>
+                            )}
+                          {player.dailyStats.daily_slippi_rating &&
+                            new Prisma.Decimal(player.slippi_rating) <
+                              player.dailyStats.daily_slippi_rating && (
+                              <span className="text-red-400 ml-1 text-xs whitespace-nowrap">{`-${
+                                Math.floor(
+                                  Math.abs(
+                                    player.slippi_rating -
+                                      player.slippi_past_rating
+                                  ) * 10
+                                ) / 10
+                              }`}</span>
+                            )}
                         </span>
                       </span>
                     </div>
