@@ -9,7 +9,9 @@ export const revalidate = 0;
 export async function GET() {
   try {
     const players = await prisma.player.findMany({
-      orderBy: { rank: "asc" },
+      orderBy: {
+        rank: "asc",
+      },
       include: {
         characters: true,
         dailyStats: true,

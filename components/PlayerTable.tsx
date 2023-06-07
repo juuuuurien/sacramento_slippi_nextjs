@@ -65,6 +65,8 @@ async function PlayerTable() {
     siteDataPromise,
   ]);
 
+  console.log(playerData, "this is plater daay");
+
   const headerData: HeaderData[] = [
     { title: "Rank", style: "text-center" },
     { title: "", style: "text-center pl-10" },
@@ -103,7 +105,7 @@ async function PlayerTable() {
         <TableCaption>{dayjs().format("MMMM Do, YYYY")}</TableCaption>
 
         <TableBody className="rounded-xl overflow-hidden">
-          {playerData?.data.map((player: PlayerData) => {
+          {playerData?.data?.map((player: PlayerData) => {
             const rankData = new SlippiRank(
               player.slippi_rating,
               player.slippi_wins,
@@ -123,7 +125,7 @@ async function PlayerTable() {
                 <TableCell className="font-semibold text-center">
                   <div className="relative">
                     <span className="text-3xl">{`${player.rank}`}</span>
-                    <span className="absolute right-0 bottom-0">
+                    <span className="absolute right-[-0.5rem] bottom-[0.25rem]">
                       {player.dailyStats.daily_rank &&
                         player.rank < player.dailyStats.daily_rank && (
                           <svg
@@ -241,25 +243,25 @@ async function PlayerTable() {
                         {rankData.displayRating}
                         <span className="">
                           {player.dailyStats.daily_slippi_rating &&
-                            new Prisma.Decimal(player.slippi_rating) >
+                            player.slippi_rating >
                               player.dailyStats.daily_slippi_rating && (
                               <span className="text-green-400 ml-1 text-xs whitespace-nowrap">{`+${
                                 Math.floor(
                                   Math.abs(
                                     player.slippi_rating -
-                                      player.slippi_past_rating
+                                      player.dailyStats.daily_slippi_rating
                                   ) * 10
                                 ) / 10
                               }`}</span>
                             )}
                           {player.dailyStats.daily_slippi_rating &&
-                            new Prisma.Decimal(player.slippi_rating) <
+                            player.slippi_rating <
                               player.dailyStats.daily_slippi_rating && (
                               <span className="text-red-400 ml-1 text-xs whitespace-nowrap">{`-${
                                 Math.floor(
                                   Math.abs(
                                     player.slippi_rating -
-                                      player.slippi_past_rating
+                                      player.dailyStats.daily_slippi_rating
                                   ) * 10
                                 ) / 10
                               }`}</span>

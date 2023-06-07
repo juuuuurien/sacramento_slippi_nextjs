@@ -23,7 +23,16 @@ export type PlayerData = {
   createdAt: string;
   updatedAt: string;
   characters: Array<PlayerCharacter>;
-  dailyStats: DailyPlayerStats;
+  dailyStats: DailyPlayerStatsData;
+};
+
+export type DailyPlayerStatsData = {
+  id: string;
+  playerId: string;
+  daily_rank: number;
+  daily_slippi_rating: number;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type SlippiPlayerData = {
