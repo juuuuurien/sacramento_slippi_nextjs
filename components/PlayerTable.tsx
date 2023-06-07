@@ -65,8 +65,6 @@ async function PlayerTable() {
     siteDataPromise,
   ]);
 
-  console.log(playerData, "this is plater daay");
-
   const headerData: HeaderData[] = [
     { title: "Rank", style: "text-center" },
     { title: "", style: "text-center pl-10" },
