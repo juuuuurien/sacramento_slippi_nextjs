@@ -101,7 +101,6 @@ async function PlayerTable() {
       </div>
       <Table className="bg-slate-950 bg-opacity-40">
         <TableCaption>{dayjs().format("MMMM Do, YYYY")}</TableCaption>
-
         <TableBody className="rounded-xl overflow-hidden">
           {playerData?.data?.map((player: PlayerData) => {
             const rankData = new SlippiRank(
@@ -123,38 +122,40 @@ async function PlayerTable() {
                 <TableCell className="font-semibold text-center">
                   <div className="relative">
                     <span className="text-3xl">{`${player.rank}`}</span>
-                    <span className="absolute right-[-0.5rem] bottom-[0.25rem]">
-                      {player.dailyStats.daily_rank &&
-                        player.rank < player.dailyStats.daily_rank && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            className="w-6 h-6 text-green-400 inline-block ml-1"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      {player.dailyStats.daily_rank &&
-                        player.rank > player.dailyStats.daily_rank && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            className="w-6 h-6 text-red-400 inline-block ml-1"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                    </span>
+                    {player.dailyStats && (
+                      <span className="absolute right-[-0.5rem] bottom-[0.25rem]">
+                        {player.dailyStats.daily_rank &&
+                          player.rank < player.dailyStats.daily_rank && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              className="w-6 h-6 text-green-400 inline-block ml-1"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          )}
+                        {player.dailyStats.daily_rank &&
+                          player.rank > player.dailyStats.daily_rank && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              className="w-6 h-6 text-red-400 inline-block ml-1"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          )}
+                      </span>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell className="relative hidden lg:flex flex-row h-[110px] p-0 pl-0 xl:pl-10 mix-blend-plus-lighter">
@@ -239,32 +240,34 @@ async function PlayerTable() {
                       </span>
                       <span className="text-center lg:text-left lg:font-normal not-italic text-sm text-slate-500">
                         {rankData.displayRating}
-                        <span className="">
-                          {player.dailyStats.daily_slippi_rating &&
-                            player.slippi_rating >
-                              player.dailyStats.daily_slippi_rating && (
-                              <span className="text-green-400 ml-1 text-xs whitespace-nowrap">{`+${
-                                Math.floor(
-                                  Math.abs(
-                                    player.slippi_rating -
-                                      player.dailyStats.daily_slippi_rating
-                                  ) * 10
-                                ) / 10
-                              }`}</span>
-                            )}
-                          {player.dailyStats.daily_slippi_rating &&
-                            player.slippi_rating <
-                              player.dailyStats.daily_slippi_rating && (
-                              <span className="text-red-400 ml-1 text-xs whitespace-nowrap">{`-${
-                                Math.floor(
-                                  Math.abs(
-                                    player.slippi_rating -
-                                      player.dailyStats.daily_slippi_rating
-                                  ) * 10
-                                ) / 10
-                              }`}</span>
-                            )}
-                        </span>
+                        {player.dailyStats && player.dailyStats && (
+                          <span className="">
+                            {player.dailyStats.daily_slippi_rating &&
+                              player.slippi_rating >
+                                player.dailyStats.daily_slippi_rating && (
+                                <span className="text-green-400 ml-1 text-xs whitespace-nowrap">{`+${
+                                  Math.floor(
+                                    Math.abs(
+                                      player.slippi_rating -
+                                        player.dailyStats.daily_slippi_rating
+                                    ) * 10
+                                  ) / 10
+                                }`}</span>
+                              )}
+                            {player.dailyStats.daily_slippi_rating &&
+                              player.slippi_rating <
+                                player.dailyStats.daily_slippi_rating && (
+                                <span className="text-red-400 ml-1 text-xs whitespace-nowrap">{`-${
+                                  Math.floor(
+                                    Math.abs(
+                                      player.slippi_rating -
+                                        player.dailyStats.daily_slippi_rating
+                                    ) * 10
+                                  ) / 10
+                                }`}</span>
+                              )}
+                          </span>
+                        )}
                       </span>
                     </div>
                   </div>
