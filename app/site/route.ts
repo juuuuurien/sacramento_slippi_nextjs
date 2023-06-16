@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-export const revalidate = 0;
 /*
  * @params {Request} request
  * @returns site data object.

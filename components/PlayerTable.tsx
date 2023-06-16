@@ -9,11 +9,9 @@ import {
 import { characterImages } from "@/lib/constants";
 import { HeaderData, PlayerData } from "@/lib/global";
 import { SlippiRank } from "@/lib/ranking";
-import { cn, getRowStyle } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { fetchSiteData } from "@/services/app";
 import { fetchPlayerData } from "@/services/players";
-import { Prisma } from "@prisma/client";
-import type { Player, PlayerCharacter, DailyPlayerStats } from "@prisma/client";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import timezone from "dayjs/plugin/timezone";
@@ -55,8 +53,6 @@ export const LoadingTable = () => {
 };
 
 async function PlayerTable() {
-  dayjs.extend(advancedFormat);
-
   const playerDataPromise = fetchPlayerData();
   const siteDataPromise = fetchSiteData();
 
@@ -125,7 +121,9 @@ async function PlayerTable() {
                     {player.dailyStats && (
                       <span className="absolute right-[-0.5rem] bottom-[0.25rem]">
                         {player.dailyStats.daily_rank &&
-                          player.rank < player.dailyStats.daily_rank && (
+                          player.rank < player.dailyStats.daily_rank &&
+                          player.slippi_rating !==
+                            player.dailyStats.daily_slippi_rating && (
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 20 20"
@@ -140,7 +138,9 @@ async function PlayerTable() {
                             </svg>
                           )}
                         {player.dailyStats.daily_rank &&
-                          player.rank > player.dailyStats.daily_rank && (
+                          player.rank > player.dailyStats.daily_rank &&
+                          player.slippi_rating !==
+                            player.dailyStats.daily_slippi_rating && (
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 20 20"
@@ -156,64 +156,6 @@ async function PlayerTable() {
                           )}
                       </span>
                     )}
-                  </div>
-                </TableCell>
-                <TableCell className="relative hidden lg:flex flex-row h-[110px] p-0 pl-0 xl:pl-10 mix-blend-plus-lighter">
-                  <div className="group relative w-full min-w-[100px] max-w-[160px] m-0 min-h-full overflow-hidden">
-                    <div className="absolute w-full h-full">
-                      <Image
-                        alt="player"
-                        fill
-                        src={`/img/portraits/${
-                          characterImages.get(playerCharacters[0].characterId)
-                            ?.portrait
-                        }`}
-                        className="object-cover object-top opacity-60 transition-all saturate-[0.85] hover:opacity-100 hover:saturate-100"
-                      />
-                    </div>
-                    <span className="absolute p-1 px-2 bg-slate-800 text-white rounded-md right-5 top-1 text-xs opacity-0 transition-all group-hover:opacity-100">
-                      {`${
-                        Math.floor(
-                          (playerCharacters[0].gameCount / totalGameCount) *
-                            10000
-                        ) / 100
-                      }%`}
-                    </span>
-                  </div>
-                  <div className="flex absolute bottom-[0.5rem] left-full">
-                    <div className="relative flex flex-row self-end gap-1">
-                      {playerCharacters.splice(1, 3).map((character) => {
-                        return (
-                          <div
-                            key={`${character.characterId}`}
-                            className="group relative min-w-[20px]"
-                          >
-                            <Image
-                              key={`${character.characterId}`}
-                              alt="character"
-                              height="20"
-                              width="20"
-                              src={`/img/characters/${
-                                characterImages.get(character.characterId)?.icon
-                              }`}
-                              className="opacity-60 transition-all hover:opacity-100"
-                            />
-                            <span className="absolute p-1 px-2 bg-slate-800 text-white rounded-md left-full bottom-full text-xs opacity-0 transition-all group-hover:opacity-100">
-                              {`${
-                                Math.floor(
-                                  (character.gameCount / totalGameCount) * 10000
-                                ) / 100
-                              }%`}
-                            </span>
-                          </div>
-                        );
-                      })}
-                      {totalChars > 3 && (
-                        <span className="whitespace-nowrap text-xs">{`+${
-                          totalChars - 3
-                        } more`}</span>
-                      )}
-                    </div>
                   </div>
                 </TableCell>
                 <TableCell className="p-0">
@@ -269,6 +211,64 @@ async function PlayerTable() {
                           </span>
                         )}
                       </span>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="relative hidden lg:flex flex-row h-[110px] p-0 mr-20">
+                  <div className="group relative w-full min-w-[100px] max-w-[160px] m-0 min-h-full overflow-hidden mix-blend-plus-lighter">
+                    <div className="absolute w-full h-full">
+                      <Image
+                        alt="player"
+                        fill
+                        src={`/img/portraits/${
+                          characterImages.get(playerCharacters[0].characterId)
+                            ?.portrait
+                        }`}
+                        className="object-cover object-top opacity-90 transition-all saturate-[0.9] hover:opacity-100 hover:saturate-100 "
+                      />
+                    </div>
+                    <span className="absolute p-1 px-2 bg-slate-800 text-white rounded-md right-5 top-1 text-xs opacity-0 transition-all group-hover:opacity-100">
+                      {`${
+                        Math.floor(
+                          (playerCharacters[0].gameCount / totalGameCount) *
+                            10000
+                        ) / 100
+                      }%`}
+                    </span>
+                  </div>
+                  <div className="flex absolute bottom-[0.5rem] left-full">
+                    <div className="relative flex flex-row self-end gap-1">
+                      {playerCharacters.splice(1, 3).map((character) => {
+                        return (
+                          <div
+                            key={`${character.characterId}`}
+                            className="group relative min-w-[20px]"
+                          >
+                            <Image
+                              key={`${character.characterId}`}
+                              alt="character"
+                              height="20"
+                              width="20"
+                              src={`/img/characters/${
+                                characterImages.get(character.characterId)?.icon
+                              }`}
+                              className="opacity-60 transition-all hover:opacity-100"
+                            />
+                            <span className="absolute p-1 px-2 bg-slate-800 text-white rounded-md left-full bottom-full text-xs opacity-0 transition-all group-hover:opacity-100">
+                              {`${
+                                Math.floor(
+                                  (character.gameCount / totalGameCount) * 10000
+                                ) / 100
+                              }%`}
+                            </span>
+                          </div>
+                        );
+                      })}
+                      {totalChars > 3 && (
+                        <span className="whitespace-nowrap text-xs">{`+${
+                          totalChars - 3
+                        } more`}</span>
+                      )}
                     </div>
                   </div>
                 </TableCell>

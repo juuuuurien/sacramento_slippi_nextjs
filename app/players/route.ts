@@ -1,7 +1,6 @@
 import { Player } from "@/types";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-export const revalidate = 1;
 /*
  * @params {Request} request
  * @returns Array of all players

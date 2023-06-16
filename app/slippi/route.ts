@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getSlippiData } from "@/services/slippi";
-export const revalidate = 0;
 /*
  * @params {Request} request
  * @returns site data object.
